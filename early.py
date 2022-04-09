@@ -49,30 +49,30 @@ class BankUser(User):
         print(target.name, "has a balance of:", target.balance)
         return True
 
-    def request_money(self, amount, target):
-        print(f"\nYou are requesting ${amount} from", target.name)
+    def request_money(self, amount, origin):
+        print(f"\nYou are requesting ${amount} from", origin.name)
         print("User authentication is required . . .")
 
-        request_pin = input(f"Enter {target.name}'s PIN:\t")
-        if request_pin == target.pin:
+        request_pin = input(f"Enter {origin.name}'s PIN:\t")
+        if request_pin == origin.pin:
             access_password = input("Enter your password:\t")
             if access_password == self.password:
                 print("Request authorized")
-                print(target.name, "sent $", amount)
+                print(origin.name, "sent $", amount)
                 self.balance += amount
-                target.balance -= amount
+                origin.balance -= amount
             else:
                 print("Invalid password. Transaction canceled.")
                 print(self.name, "has a balance of:", self.balance)
-                print(target.name, "has a balance of:", target.balance)
+                print(origin.name, "has a balance of:", origin.balance)
                 return False
         else:
             print("Invalid PIN. Transaction canceled.")
             print(self.name, "has a balance of:", self.balance)
-            print(target.name, "has a balance of:", target.balance)
+            print(origin.name, "has a balance of:", origin.balance)
             return False
         print(self.name, "has a balance of:", self.balance)
-        print(target.name, "has a balance of:", target.balance)
+        print(origin.name, "has a balance of:", origin.balance)
         return True
 
 # Driver Code for Task 1
