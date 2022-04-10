@@ -12,12 +12,22 @@ class User:
             self.name = new_name
 
     def change_pin(self, new_pin):
-        self.pin = new_pin
+        if len(str(new_pin)) != 4:
+            print(
+                "Pin was not changed: all pins must be 4 numbers in length.")
+        elif new_pin == self.pin:
+            print("Error: you cannot reuse a PIN.")
+            return
+        else:
+            self.pin = new_pin
 
     def change_password(self, new_password):
-        if len(new_password) < 5:
+        if len(new_password) < 5 or ' ' in new_password:
             print(
-                "Password was not changed: all passwords must be greater than 5 characters.")
+                "Password was not changed: all passwords must be greater than 5 characters and cannot contain spaces.")
+        elif new_password == self.password:
+            print("Error: you cannot reuse a password.")
+            return
         else:
             self.password = new_password
 
@@ -26,12 +36,21 @@ class BankUser(User):
     def __init__(self, name, pin, password):
         super().__init__(name, pin, password)
         self.balance = 0
+        self.on_hold = False
+
+    def toggle_hold(self):
+        self.on_hold = not self.on_hold
 
     def show_balance(self):
         formatted_balance = "{:.2f}".format(self.balance)
         print(f"{self.name}'s balance is: ${formatted_balance}")
 
     def withdraw(self, amount):
+        if self.on_hold == True:
+            print(
+                "Sorry: this transaction cannot be completed at this time.  Please try again later.")
+            return False
+
         if type(amount) != int and type(amount) != float or amount <= 0:
             print(f"Please enter a valid amount greater than zero.")
         elif amount > self.balance:
@@ -40,6 +59,11 @@ class BankUser(User):
             self.balance -= amount
 
     def deposit(self, amount):
+        if self.on_hold == True:
+            print(
+                "Sorry: this transaction cannot be completed at this time.  Please try again later.")
+            return False
+
         if type(amount) != int and type(amount) != float or amount <= 0:
             print("Please enter a valid amount greater than zero.")
         else:
@@ -47,6 +71,11 @@ class BankUser(User):
 
     def transfer_money(self, amount, target):
         formatted_amount = "{:.2f}".format(amount)
+
+        if self.on_hold == True or target.on_hold == True:
+            print(
+                "Sorry: this transaction cannot be completed at this time.  Please try again later.")
+            return False
 
         if type(amount) != int and type(amount) != float or amount <= 0:
             print(f"Please enter a valid transfer amount greater than zero.")
@@ -74,6 +103,11 @@ class BankUser(User):
 
     def request_money(self, amount, origin):
         formatted_amount = "{:.2f}".format(amount)
+
+        if self.on_hold == True or origin.on_hold == True:
+            print(
+                "Sorry: this transaction cannot be completed at this time.  Please try again later.")
+            return False
 
         if type(amount) != int and type(amount) != float or amount <= 0:
             print("Please enter a valid request amount greater than zero.")
@@ -135,10 +169,12 @@ class BankUser(User):
 # bank_user.show_balance()
 
 # Driver Code for Task 5
-user1 = BankUser("Bob", "1234", "password")
-user2 = BankUser("Alice", "5678", "apassword")
-user2.deposit(5000)
-user1.show_balance()
-user2.show_balance()
-if user2.transfer_money(500, user1) == True:
-    user2.request_money(250, user1)
+# user1 = BankUser("Bob", "1234", "password")
+# user2 = BankUser("Alice", "5678", "apassword")
+# user2.deposit(5000)
+# user1.show_balance()
+# user2.show_balance()
+# transfer = user2.transfer_money(500, user1)
+# user2.toggle_hold()
+# if transfer == True:
+#     user2.request_money(250, user1)
